@@ -7,6 +7,35 @@ import {
   Briefcase, Target, Heart, FileCheck, Building2, Key, Link as LinkIcon, Mail, Phone, MapPin
 } from 'lucide-react';
 
+// --- BRAND CONFIGURATION ---
+// To update your logo, simply paste your image URL below (e.g., "https://yourdomain.com/logo.png")
+// If set to null, it will default to the geometric AltRent icon.
+const LOGO_IMAGE_URL = null; 
+
+// --- Shared Logo Component ---
+const Logo = ({ variant = 'dark', className = "" }) => {
+  if (LOGO_IMAGE_URL) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <img src={LOGO_IMAGE_URL} alt="AltRent Logo" className="h-8 w-auto object-contain" />
+      </div>
+    );
+  }
+
+  // Default Geometric Logo
+  const isDark = variant === 'dark';
+  return (
+    <div className={`flex items-center gap-2 ${className}`}>
+      <div className="w-8 h-8 rounded-lg bg-[#00F5A0] flex items-center justify-center shadow-lg shadow-[#00F5A0]/20">
+        <div className="w-3 h-3 bg-[#0D1520] rounded-sm" />
+      </div>
+      <span className={`font-jakarta text-xl font-bold tracking-tight ${isDark ? 'text-[#0D1520]' : 'text-white'}`}>
+        AltRent<span className="text-[#00F5A0]">.</span>
+      </span>
+    </div>
+  );
+};
+
 // --- Global Styles Injection ---
 const FontStyles = () => (
   <style dangerouslySetInnerHTML={{__html: `
@@ -116,20 +145,20 @@ const Header = ({ setView, currentView }) => {
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0D1520]/95 backdrop-blur-md py-4 shadow-lg border-b border-white/5' : 'bg-[#0D1520] md:bg-transparent py-6'}`}>
       <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
-          <div className="w-8 h-8 rounded-lg bg-[#00F5A0] flex items-center justify-center">
-            <div className="w-3 h-3 bg-[#0D1520] rounded-sm" />
-          </div>
-          <span className={`font-jakarta text-xl font-bold tracking-tight ${isScrolled ? 'text-white' : 'text-white md:text-[#0D1520]'}`}>
-            AltRent<span className="text-[#00F5A0]">.</span>
-          </span>
-        </div>
+        <button onClick={() => setView('home')} className="cursor-pointer outline-none">
+          <Logo variant={isScrolled ? 'light' : 'dark'} className={!isScrolled ? 'md:flex' : ''} />
+          {/* Correction for transparent header text color on light background */}
+          {!isScrolled && !LOGO_IMAGE_URL && (
+            <style dangerouslySetInnerHTML={{__html: `
+              header:not(.bg-[#0D1520]) .font-jakarta { color: var(--midnight) !important; }
+            `}} />
+          )}
+        </button>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-2 bg-white/5 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/10">
           {[
-            { label: 'Home', path: 'home' },
-            { label: 'Browse Homes', path: 'browse' },
+            { label: 'Find a home', path: 'browse' },
             { label: 'For Renters', path: 'renters' },
             { label: 'For Landlords', path: 'landlords' },
             { label: 'Enterprise', path: 'hq' },
@@ -171,8 +200,7 @@ const Header = ({ setView, currentView }) => {
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-[#0D1520] border-t border-white/10 p-6 flex flex-col gap-2 shadow-xl">
            {[
-            { label: 'Home', path: 'home' },
-            { label: 'Browse Homes', path: 'browse' },
+            { label: 'Find a home', path: 'browse' },
             { label: 'For Renters', path: 'renters' },
             { label: 'For Landlords', path: 'landlords' },
             { label: 'Enterprise', path: 'hq' },
@@ -204,9 +232,9 @@ const Hero = ({ setView, openWaitlist }) => (
     <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-b from-[#e2e8f0] to-transparent rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3" />
     
     <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] shadow-sm mb-8">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 shadow-sm mb-8">
         <span className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse" />
-        <span className="text-xs font-medium text-slate-600">Disrupting Nigerian Real Estate</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-[#3B82F6]">Disrupting Nigerian Real Estate</span>
       </div>
       
       <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] leading-[1.05] mb-6 tracking-tight">
@@ -222,7 +250,7 @@ const Hero = ({ setView, openWaitlist }) => (
         <button onClick={() => setView('browse')} className="w-full sm:w-auto bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#00d68b] hover-glow shadow-sm flex items-center justify-center gap-2">
           Browse Monthly Homes <ArrowRight size={20} />
         </button>
-        <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto bg-transparent text-[#3B82F6] border-2 border-[#3B82F6] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#3B82F6]/5 flex items-center justify-center">
+        <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto bg-transparent text-[#3B82F6] border-2 border-[#3B82F6] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#3B82F6]/5 flex items-center justify-center">
           Join the Waitlist
         </button>
       </div>
@@ -264,7 +292,7 @@ const CoreVision = () => (
     <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#00F5A0]/50 to-transparent" />
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-20">
-        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6">
           The Why
         </div>
         <h2 className="font-jakarta text-3xl md:text-5xl font-bold mb-6">Rethinking the Nigerian Rental Economy.</h2>
@@ -319,7 +347,7 @@ const ForTenants = ({ setView }) => (
       </div>
       
       <div className="order-1 lg:order-2">
-        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#0D1520] text-white text-xs font-bold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
           For Tenants
         </div>
         <h2 className="font-jakarta text-4xl lg:text-5xl font-bold text-[#0D1520] mb-6 leading-tight">Move In Today. Flow Every Month.</h2>
@@ -357,7 +385,7 @@ const ForLandlords = ({ setView }) => (
   <section className="py-24 bg-[#F8FAFC] border-y border-[#E2E8F0]" id="landlords">
     <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
       <div>
-        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
           For Landlords
         </div>
         <h2 className="font-jakarta text-4xl lg:text-5xl font-bold text-[#0D1520] mb-6 leading-tight">Annual Security. Monthly Remittance. Zero Arrears.</h2>
@@ -383,7 +411,7 @@ const ForLandlords = ({ setView }) => (
           ))}
         </ul>
 
-        <button onClick={() => setView('list-property')} className="bg-[#0D1520] text-[#00F5A0] border border-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#1a2536] shadow-sm flex items-center gap-2">
+        <button onClick={() => setView('list-property')} className="bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#00d68b] hover-glow shadow-sm flex items-center gap-2">
           List Your Property <ArrowRight size={20} />
         </button>
       </div>
@@ -426,7 +454,7 @@ const HowItWorks = () => {
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
             How It Works
           </div>
           <h2 className="font-jakarta text-3xl md:text-5xl font-bold text-[#0D1520] mb-4">A Seamless 3-Step Process</h2>
@@ -434,13 +462,13 @@ const HowItWorks = () => {
 
         {/* Re-engineered with perfectly connected lines and disconnected cards */}
         <div className="relative max-w-5xl mx-auto">
-          {/* Connecting Line */}
+          {/* Connecting Line - Mint Green as requested */}
           <div className="hidden md:block absolute top-10 left-[16.66%] w-[66.66%] h-[2px] bg-gradient-to-r from-[#E2E8F0] via-[#00F5A0] to-[#E2E8F0] z-0" />
           
           <div className="grid md:grid-cols-3 gap-8 relative z-10">
             {steps.map((step, i) => (
               <div key={i} className="group flex flex-col items-center">
-                {/* Elevated Circle */}
+                {/* Elevated Circle - Mint Green hover as requested */}
                 <div className="w-20 h-20 bg-[#F8FAFC] border-2 border-[#E2E8F0] text-[#0D1520] rounded-full flex items-center justify-center font-jakarta font-bold text-2xl mb-8 relative z-10 group-hover:bg-[#00F5A0] group-hover:border-[#00F5A0] group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(0,245,160,0.4)] transition-all duration-300">
                   {i + 1}
                 </div>
@@ -462,7 +490,7 @@ const Pricing = ({ setView }) => (
   <section className="py-24 bg-[#F8FAFC]" id="tiers">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-16">
-        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-4">
+        <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
           Plans & Pricing
         </div>
         <h2 className="font-jakarta text-3xl md:text-5xl font-bold text-[#0D1520] mb-4">Select the Plan That Fits Your Rhythm.</h2>
@@ -640,10 +668,7 @@ const Footer = ({ setView, openWaitlist, openPolicyModal }) => (
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/10 text-slate-500 text-sm">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#00F5A0] flex items-center justify-center">
-            <div className="w-3 h-3 bg-[#0D1520] rounded-sm" />
-          </div>
-          <span className="font-jakarta font-bold text-white text-xl">AltRent.</span>
+          <Logo variant="light" />
         </div>
         <p>AltRent: Making premium living affordable through monthly flow.</p>
         <p>&copy; 2026 AltRent Ltd. Lagos, Nigeria.</p>
@@ -742,7 +767,7 @@ const ContactPage = ({ setView }) => {
       {/* Hero */}
       <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10 mb-16">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             Get in Touch
           </div>
           <h1 className="font-jakarta text-4xl md:text-5xl lg:text-6xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
@@ -756,7 +781,7 @@ const ContactPage = ({ setView }) => {
 
       {/* Main Content */}
       <section className="py-12 pb-24 bg-[#F8FAFC]">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+        <div className="max-w-[1200px] mx-auto px-6 grid md:grid-cols-2 gap-16">
           
           {/* Contact Info */}
           <div>
@@ -823,7 +848,7 @@ const ContactPage = ({ setView }) => {
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Message</label>
                   <textarea required rows="4" className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-4 py-3 text-[#0D1520] focus:outline-none focus:border-[#00F5A0] resize-none" placeholder="How can we help you today?"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors shadow-[0_0_20px_rgba(0,245,160,0.3)] hover-glow">
+                <button type="submit" className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors shadow-[0_0_20px_rgba(0,245,160,0.2)] hover-glow">
                   Send Message
                 </button>
               </form>
@@ -873,7 +898,7 @@ const WaitlistModal = ({ isOpen, onClose }) => {
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#00F5A0] to-[#3B82F6]" />
             
             <h2 className="font-jakarta text-3xl font-bold text-white mb-4">Join the Waitlist</h2>
-            <p className="text-slate-300 mb-8 max-w-lg mx-auto">
+            <p className="text-slate-300 mb-8 max-lg mx-auto">
               Get early access to monthly listings in your preferred neighborhood.
             </p>
 
@@ -1138,7 +1163,7 @@ const EnterprisePage = ({ setView }) => {
       {/* Enterprise Hero */}
       <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10 mb-16">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             AltRent HQ
           </div>
           <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
@@ -1296,7 +1321,7 @@ const AboutPage = ({ setView, openWaitlist }) => {
       {/* About Hero */}
       <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10 mb-16">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#0D1520]/5 border border-[#0D1520]/10 text-[#0D1520] text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             The AltRent Story
           </div>
           <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
@@ -1351,7 +1376,7 @@ const AboutPage = ({ setView, openWaitlist }) => {
             <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000" alt="Nigerian Professionals" className="w-full h-full object-cover opacity-80 mix-blend-overlay group-hover:scale-105 transition-transform duration-700" />
           </div>
           <div>
-            <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-6">
+            <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
               Why We Exist
             </div>
             <h2 className="font-jakarta text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
@@ -1460,7 +1485,7 @@ const RentersPage = ({ setView, openWaitlist }) => {
       {/* Renter Hero */}
       <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10 mb-16">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#00F5A0]/10 border border-[#00F5A0]/20 text-[#00F5A0] text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             Housing as a Subscription
           </div>
           <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
@@ -1629,7 +1654,7 @@ const LandlordsPage = ({ setView }) => {
       {/* Landlord Hero */}
       <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10 mb-16">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
             Secure, Passive Property Income
           </div>
           <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
@@ -1640,7 +1665,7 @@ const LandlordsPage = ({ setView }) => {
             Stop chasing rent. Onboard high-quality, vetted tenants and protect your property with the AltRent Legal Shield—built for the 2025/2026 Lagos Tenancy Laws.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button onClick={() => setView('list-property')} className="w-full sm:w-auto bg-[#0D1520] text-[#00F5A0] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#1a2536] shadow-sm transition-all flex items-center justify-center gap-2 hover-glow">
+            <button onClick={() => setView('list-property')} className="w-full sm:w-auto bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] shadow-sm transition-all flex items-center justify-center gap-2 hover-glow">
               List Your Property <ArrowRight size={20} />
             </button>
             <button onClick={() => setView('signup')} className="w-full sm:w-auto bg-transparent border-2 border-[#3B82F6] text-[#3B82F6] px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all">
@@ -1656,7 +1681,7 @@ const LandlordsPage = ({ setView }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0D1520]/60 to-transparent pointer-events-none" />
             
             <div className="absolute inset-0 max-w-[1400px] mx-auto px-6 pointer-events-none">
-              <div className="absolute bottom-6 md:bottom-12 pointer-events-auto glass-panel-dark p-6 rounded-2xl shadow-2xl transform hover:-translate-y-2 transition-all duration-300 w-full max-w-[300px] sm:max-w-sm border border-white/20 hover:shadow-[0_0_20px_rgba(0,245,160,0.3)]">
+              <div className="absolute bottom-6 md:bottom-12 pointer-events-auto glass-panel-dark p-6 rounded-2xl shadow-2xl transform hover:-translate-y-2 transition-all duration-300 w-full max-w-[300px] sm:max-w-sm border border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-sm text-[#00F5A0] font-semibold mb-1 uppercase tracking-wider">Monthly Remittance</p>
@@ -1711,7 +1736,7 @@ const LandlordsPage = ({ setView }) => {
 
           <div className="relative max-w-6xl mx-auto">
             {/* Connecting Line (4 steps) */}
-            <div className="hidden md:block absolute top-10 left-[12.5%] w-[75%] h-[2px] bg-gradient-to-r from-[#E2E8F0] via-[#3B82F6] to-[#E2E8F0] z-0" />
+            <div className="hidden md:block absolute top-10 left-[12.5%] w-[75%] h-[2px] bg-gradient-to-r from-[#E2E8F0] via-[#00F5A0] to-[#E2E8F0] z-0" />
 
             <div className="grid md:grid-cols-4 gap-8 relative z-10">
               {[
@@ -1721,7 +1746,7 @@ const LandlordsPage = ({ setView }) => {
                 { title: "Passive Management", desc: "Monitor your portfolio via the dashboard while we handle the collections and legal compliance." }
               ].map((step, i) => (
                 <div key={i} className="group flex flex-col items-center">
-                  <div className="w-20 h-20 bg-[#F8FAFC] border-2 border-[#E2E8F0] text-[#0D1520] rounded-full flex items-center justify-center font-jakarta font-bold text-xl mb-8 relative z-10 group-hover:bg-[#3B82F6] group-hover:border-[#3B82F6] group-hover:text-white group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-300">
+                  <div className="w-20 h-20 bg-[#F8FAFC] border-2 border-[#E2E8F0] text-[#0D1520] rounded-full flex items-center justify-center font-jakarta font-bold text-xl mb-8 relative z-10 group-hover:bg-[#00F5A0] group-hover:border-[#00F5A0] group-hover:text-[#0D1520] group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(0,245,160,0.4)] transition-all duration-300">
                     {i + 1}
                   </div>
                   <div className="bg-white border border-[#E2E8F0] p-6 rounded-2xl shadow-sm group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-300 w-full text-center hover-line-effect flex-1">
@@ -1766,13 +1791,13 @@ const LandlordsPage = ({ setView }) => {
             {faqs.map((faq, i) => (
               <div key={i} className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl overflow-hidden transition-all duration-300">
                 <button 
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  onClick={() => setOpenFaq(faq.q)}
                   className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                 >
-                  <span className={`font-jakarta font-semibold text-sm md:text-base ${openFaq === i ? 'text-[#3B82F6]' : 'text-[#0D1520]'}`}>{faq.q}</span>
-                  <ChevronDown size={20} className={`text-slate-400 transition-transform ${openFaq === i ? 'rotate-180 text-[#3B82F6]' : ''}`} />
+                  <span className={`font-jakarta font-semibold text-sm md:text-base ${openFaq === faq.q ? 'text-[#3B82F6]' : 'text-[#0D1520]'}`}>{faq.q}</span>
+                  <ChevronDown size={20} className={`text-slate-400 transition-transform ${openFaq === faq.q ? 'rotate-180 text-[#3B82F6]' : ''}`} />
                 </button>
-                <div className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openFaq === i ? 'max-h-40 pb-5 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openFaq === faq.q ? 'max-h-40 pb-5 opacity-100' : 'max-h-0 opacity-0'}`}>
                   <p className="text-slate-600 text-sm leading-relaxed border-t border-[#E2E8F0] pt-4">{faq.a}</p>
                 </div>
               </div>
@@ -2118,12 +2143,9 @@ const DashboardSidebar = ({ role, setRole, setView }) => {
   return (
     <div className="w-64 bg-[#0D1520] h-screen fixed left-0 top-0 text-slate-300 flex flex-col border-r border-white/5 z-50">
       <div className="p-6 border-b border-white/5">
-        <div className="flex items-center gap-2 mb-8 cursor-pointer" onClick={() => setView('home')}>
-          <div className="w-8 h-8 rounded-lg bg-[#00F5A0] flex items-center justify-center">
-            <div className="w-3 h-3 bg-[#0D1520] rounded-sm" />
-          </div>
-          <span className="font-jakarta text-xl font-bold text-white tracking-tight">AltRent.</span>
-        </div>
+        <button onClick={() => setView('home')} className="mb-8 cursor-pointer outline-none">
+          <Logo variant="light" />
+        </button>
 
         {/* Prototype Role Switcher (For Demo Purposes) */}
         <div className="bg-white/5 p-1 rounded-lg flex text-xs font-medium mb-2 border border-white/10">
@@ -2409,14 +2431,9 @@ const LoginPage = ({ setView, setDashboardRole }) => {
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 cursor-pointer mb-6" onClick={() => setView('home')}>
-            <div className="w-10 h-10 rounded-xl bg-[#00F5A0] flex items-center justify-center shadow-[0_0_20px_rgba(0,245,160,0.3)]">
-              <div className="w-4 h-4 bg-[#0D1520] rounded-sm" />
-            </div>
-            <span className="font-jakarta text-2xl font-bold tracking-tight text-white">
-              AltRent<span className="text-[#00F5A0]">.</span>
-            </span>
-          </div>
+          <button onClick={() => setView('home')} className="mb-8 cursor-pointer outline-none">
+            <Logo variant="light" className="justify-center" />
+          </button>
           <h1 className="font-jakarta text-3xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-slate-400">Log in to manage your monthly flow.</p>
         </div>
@@ -2516,12 +2533,9 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
         
         {/* Header Nav inside flow */}
         <div className="absolute top-[-80px] left-0 right-0 flex justify-between items-center">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
-            <div className="w-8 h-8 rounded-xl bg-[#00F5A0] flex items-center justify-center">
-              <div className="w-3 h-3 bg-[#0D1520] rounded-sm" />
-            </div>
-            <span className="font-jakarta text-xl font-bold text-white">AltRent.</span>
-          </div>
+          <button onClick={() => setView('home')} className="cursor-pointer outline-none">
+            <Logo variant="light" />
+          </button>
           <button onClick={() => setView('login')} className="text-slate-400 hover:text-white text-sm font-medium transition-colors">Log In Instead</button>
         </div>
 
