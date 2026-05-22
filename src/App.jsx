@@ -1614,7 +1614,7 @@ const LandlordsPage = ({ setView }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0D1520]/60 to-transparent pointer-events-none" />
             
             <div className="absolute inset-0 max-w-[1400px] mx-auto px-6 pointer-events-none">
-              <div className="absolute bottom-6 md:bottom-12 pointer-events-auto glass-panel-dark p-6 rounded-2xl shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 w-full max-w-[300px] sm:max-w-sm border border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+              <div className="absolute bottom-6 md:bottom-12 pointer-events-auto glass-panel-dark p-6 rounded-2xl shadow-2xl transform hover:-translate-y-2 transition-all duration-300 w-full max-w-[300px] sm:max-w-sm border border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-sm text-[#00F5A0] font-semibold mb-1 uppercase tracking-wider">Monthly Remittance</p>
@@ -2433,7 +2433,8 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
   };
 
   return (
-    <div className={`min-h-screen bg-[#0D1520] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-all duration-1000 ${step === 4 ? 'bg-[#00F5A0]/10' : ''}`}>
+    // FIX: Removed dynamic class override so step 4 correctly uses the midnight background.
+    <div className="min-h-screen bg-[#0D1520] flex flex-col items-center justify-center p-6 relative overflow-hidden transition-all duration-1000">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#00F5A0]/5 rounded-full blur-[120px] pointer-events-none" />
       
       <div className="w-full max-w-4xl relative z-10">
