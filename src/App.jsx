@@ -11,7 +11,6 @@ import {
 // --- BRAND CONFIGURATION ---
 const LOGO_IMAGE_URL = null; 
 
-// --- Shared Logo Component ---
 const Logo = ({ variant = 'dark', className = "", isApp = false }) => {
   if (LOGO_IMAGE_URL) {
     return (
@@ -35,7 +34,6 @@ const Logo = ({ variant = 'dark', className = "", isApp = false }) => {
   );
 };
 
-// --- Global Styles Injection ---
 const FontStyles = () => (
   <style dangerouslySetInnerHTML={{__html: `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
@@ -241,7 +239,7 @@ const Hero = ({ setView, openWaitlist }) => (
       
       <div className="flex flex-col sm:flex-row items-center gap-4 justify-center mb-16">
         <button onClick={() => setView('browse')} className="w-full sm:w-auto bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#00d68b] hover-glow shadow-sm flex items-center justify-center gap-2">
-          Browse Monthly Homes <ArrowRight size={20} />
+          Find a Home <ArrowRight size={20} />
         </button>
         <button onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto bg-transparent text-[#3B82F6] border-2 border-[#3B82F6] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#3B82F6]/5 flex items-center justify-center">
           Join the Waitlist
@@ -309,7 +307,7 @@ const CoreVision = () => (
 );
 
 const ForTenants = ({ setView }) => (
-  <section className="py-24 bg-white overflow-hidden" id="renters">
+  <section className="py-24 bg-white overflow-hidden">
     <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
       <div className="order-2 lg:order-1 relative group">
         <div className="aspect-square md:aspect-[4/5] rounded-3xl bg-[#F8FAFC] overflow-hidden border border-[#E2E8F0] relative shadow-lg group-hover:shadow-2xl transition-all duration-500">
@@ -363,7 +361,7 @@ const ForTenants = ({ setView }) => (
         </ul>
 
         <button onClick={() => setView('browse')} className="bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-[#00d68b] hover-glow shadow-sm flex items-center gap-2">
-          Find My Monthly Rental <ArrowRight size={20} />
+          Find a Home <ArrowRight size={20} />
         </button>
       </div>
     </div>
@@ -371,7 +369,7 @@ const ForTenants = ({ setView }) => (
 );
 
 const ForLandlords = ({ setView }) => (
-  <section className="py-24 bg-[#F8FAFC] border-y border-[#E2E8F0]" id="landlords">
+  <section className="py-24 bg-[#F8FAFC] border-y border-[#E2E8F0]">
     <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
       <div>
         <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
@@ -472,7 +470,7 @@ const HowItWorks = () => {
 };
 
 const Pricing = ({ setView }) => (
-  <section className="py-24 bg-[#F8FAFC]" id="tiers">
+  <section className="py-24 bg-[#F8FAFC]">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-16">
         <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
@@ -538,7 +536,7 @@ const Waitlist = () => {
   };
 
   return (
-    <section className="py-24 bg-gradient-to-br from-[#0D1520] to-[#1a2536] relative border-t border-white/5" id="waitlist">
+    <section className="py-24 bg-gradient-to-br from-[#0D1520] to-[#1a2536] relative border-t border-white/5">
       <div className="max-w-4xl mx-auto px-6">
         <div className="glass-panel-dark p-10 md:p-14 rounded-3xl text-center relative overflow-hidden border border-white/10 shadow-2xl transition-transform hover:-translate-y-2 duration-500 hover-glow">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#00F5A0] to-[#3B82F6]" />
@@ -1111,6 +1109,157 @@ const ListPropertyWizard = ({ setView }) => {
   );
 };
 
+const EnterprisePage = ({ setView }) => {
+  return (
+    <div className="animate-in fade-in duration-500 bg-[#F8FAFC]">
+      <section className="relative pt-40 pb-16 overflow-hidden bg-[#F8FAFC]">
+        <div className="max-w-5xl mx-auto px-6 text-center relative z-10 mb-16">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#3B82F6]/10 border border-[#3B82F6]/20 text-[#3B82F6] text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
+            AltRent HQ
+          </div>
+          <h1 className="font-jakarta text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D1520] mb-6 tracking-tight leading-[1.05]">
+            Housing as a <span className="text-[#3B82F6]">High-Performance</span> Benefit.
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Attract, retain, and empower your best talent by removing the stress of annual rent. Manage staff relocation and bulk rental payments through one seamless portal.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onClick={() => setView('signup')} className="w-full sm:w-auto bg-[#3B82F6] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-600 hover-glow shadow-sm transition-all flex items-center justify-center gap-2">
+              Schedule a Demo <ArrowRight size={20} />
+            </button>
+            <button onClick={() => setView('about')} className="w-full sm:w-auto bg-transparent border-2 border-[#3B82F6] text-[#3B82F6] px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all flex items-center justify-center gap-2">
+              <FileText size={20} /> Download the Enterprise Guide
+            </button>
+          </div>
+        </div>
+
+        <div className="w-full relative z-10">
+          <div className="relative w-full aspect-[4/3] md:aspect-video lg:aspect-[21/9] bg-[#0D1520]">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2000" alt="Premium Corporate Office" className="w-full h-full object-cover opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1520]/60 to-transparent pointer-events-none" />
+            
+            <div className="absolute inset-0 max-w-[1400px] mx-auto px-6 pointer-events-none">
+              <div className="absolute bottom-6 md:bottom-12 pointer-events-auto glass-panel-dark p-6 rounded-2xl shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 w-full max-w-[300px] sm:max-w-sm border border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <p className="text-sm text-[#3B82F6] font-semibold mb-1 uppercase tracking-wider">Active Staff Leases</p>
+                    <p className="text-white font-jakarta font-bold text-3xl">42 Employees</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#3B82F6]/20 flex items-center justify-center">
+                    <Building2 size={20} className="text-[#3B82F6]" />
+                  </div>
+                </div>
+                <div className="h-px w-full bg-white/10 mb-4" />
+                <div className="flex items-center gap-3 text-sm text-slate-300">
+                  <ShieldCheck size={16} className="text-[#00F5A0]" />
+                  <span>Managed by AltRent HQ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-[#0D1520] text-white">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+          <div className="hover:-translate-y-2 transition-transform duration-300">
+            <h2 className="font-jakarta text-3xl font-bold text-slate-400 mb-4">The Burden</h2>
+            <p className="text-xl md:text-2xl font-medium leading-relaxed mb-6 border-l-4 border-slate-600 pl-6 text-white">
+              70% of Nigerian professionals struggle with the "Annual Rent Wall," leading to financial stress and reduced productivity.
+            </p>
+          </div>
+          <div className="hover:-translate-y-2 transition-transform duration-300">
+            <h2 className="font-jakarta text-3xl font-bold text-[#00F5A0] mb-4">The Solution</h2>
+            <p className="text-xl md:text-2xl font-medium leading-relaxed border-l-4 border-[#00F5A0] pl-6 text-white">
+              AltRent HQ allows companies to offer Monthly Rent as a staff benefit, ensuring your team lives in premium housing without the upfront financial drain.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-jakarta text-3xl md:text-4xl font-bold text-[#0D1520] mb-4">Key Features for Companies</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              { icon: <Building2 size={24} />, title: "Bulk Rental Management", desc: "Manage multiple employee leases across Lagos and Abuja from a single interface." },
+              { icon: <FileCheck size={24} />, title: "Tax-Compliant Billing", desc: "Receive consolidated, tax-ready invoices for all staff housing expenses." },
+              { icon: <Zap size={24} />, title: "Rapid Relocation", desc: "Get new hires moved into verified, high-end apartments in under 48 hours." },
+              { icon: <ShieldCheck size={24} />, title: "Verified Inventory", desc: "Every apartment listed for your staff is pre-vetted for safety, quality, and ownership legitimacy." }
+            ].map((f, i) => (
+              <div key={i} className="bg-[#F8FAFC] border border-[#E2E8F0] p-8 rounded-2xl flex items-start gap-6 hover:shadow-lg hover:-translate-y-2 transition-all duration-300 hover-line-effect-blue">
+                <div className="w-14 h-14 bg-[#3B82F6]/10 text-[#3B82F6] rounded-xl flex items-center justify-center shrink-0">
+                  {f.icon}
+                </div>
+                <div>
+                  <h3 className="font-jakarta text-xl font-bold text-[#0D1520] mb-2">{f.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="font-jakarta text-3xl md:text-4xl font-bold text-[#0D1520] mb-4">How It Works</h2>
+          </div>
+          
+          <div className="relative max-w-5xl mx-auto">
+            <div className="hidden md:block absolute top-10 left-[16.66%] w-[66.66%] h-[2px] bg-gradient-to-r from-[#E2E8F0] via-[#3B82F6] to-[#E2E8F0] z-0" />
+            
+            <div className="grid md:grid-cols-3 gap-8 relative z-10">
+              {[
+                { title: "Onboard Your Team", desc: "Add employees to your AltRent HQ account." },
+                { title: "Select Housing", desc: "Employees choose from our verified 'Monthly Flow' inventory." },
+                { title: "Automated Payments", desc: "AltRent handles the monthly remittances, while you receive a single monthly report." }
+              ].map((step, i) => (
+                <div key={i} className="group flex flex-col items-center">
+                  <div className="w-20 h-20 bg-white border-2 border-[#E2E8F0] text-[#0D1520] rounded-full flex items-center justify-center font-jakarta font-bold text-2xl mb-8 relative z-10 group-hover:bg-[#3B82F6] group-hover:border-[#3B82F6] group-hover:text-white group-hover:-translate-y-2 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-300">
+                    {i + 1}
+                  </div>
+                  <div className="bg-white border border-[#E2E8F0] p-8 rounded-2xl shadow-sm group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-300 w-full text-center hover-line-effect-blue flex-1">
+                    <h3 className="font-jakarta text-xl font-bold text-[#0D1520] mb-3">{step.title}</h3>
+                    <p className="text-slate-600 leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-[#0D1520] text-white text-center">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="font-jakarta text-3xl md:text-4xl font-bold mb-16">The Benefits</h2>
+          <div className="grid md:grid-cols-3 gap-12 mb-16">
+            {[
+              { icon: <Heart size={32} />, title: "Boost Retention", desc: "Reduce employee churn by solving their biggest living expense." },
+              { icon: <Target size={32} />, title: "Attract Top Talent", desc: "Stand out in the job market with a benefit that actually changes lives." },
+              { icon: <TrendingUp size={32} />, title: "Predictable Cash Flow", desc: "Move staff housing from a massive upfront cost to a manageable monthly line item." }
+            ].map((ben, i) => (
+              <div key={i} className="flex flex-col items-center hover:-translate-y-2 transition-transform duration-300">
+                <div className="w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-[#3B82F6] mb-6">
+                  {ben.icon}
+                </div>
+                <h3 className="font-jakarta text-xl font-bold mb-3">{ben.title}</h3>
+                <p className="text-slate-400">{ben.desc}</p>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setView('signup')} className="bg-[#00F5A0] text-[#0D1520] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] hover-glow shadow-sm transition-all">
+            Schedule a Demo
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 const BrowsePage = ({ setView }) => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [paymentTier, setPaymentTier] = useState('monthly');
@@ -1204,7 +1353,7 @@ const BrowsePage = ({ setView }) => {
 
               <div className="mt-auto">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-transparent border border-[#E2E8F0] text-slate-500 px-3 py-1.5 rounded-md">Credit-Building Enabled</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-transparent border border-slate-200 text-slate-500 px-3 py-1.5 rounded-lg">Credit-Building Enabled</span>
                 </div>
                 
                 <p className="text-sm font-bold text-slate-600 mb-2">Total: ₦{(prop.rent * 12).toLocaleString()}/yr</p>
@@ -1909,125 +2058,4 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
             ) : (
               <div className="py-20 flex flex-col items-center justify-center animate-in fade-in">
                 <Loader2 size={64} className="text-[#00F5A0] animate-spin mb-8" />
-                <h3 className="font-jakarta text-2xl font-bold text-white mb-2">Analyzing your monthly flow...</h3>
-                <p className="text-slate-400">Securely connecting to your primary bank account.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="max-w-md mx-auto text-center animate-in zoom-in-90 duration-700">
-            <div className="w-24 h-24 bg-[#00F5A0] rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_#00F5A0]">
-              <Check size={48} className="text-[#0D1520]" />
-            </div>
-
-            {selectedRole === 'tenant' && (
-              <>
-                <h2 className="font-jakarta text-4xl font-bold text-white mb-4">Congratulations!<br/>You are Pre-Approved.</h2>
-                <p className="text-slate-300 text-lg mb-10">Your AltRent Trust Score is verified. You're ready to flow.</p>
-                <button onClick={handleFinalRedirect} className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow">
-                  Go to Tenant Dashboard
-                </button>
-              </>
-            )}
-
-            {selectedRole === 'landlord' && (
-              <>
-                <h2 className="font-jakarta text-4xl font-bold text-white mb-4">Identity Verified.</h2>
-                <p className="text-slate-300 text-lg mb-10">Your owner profile is active and secured by the Legal Shield.</p>
-                <button onClick={handleFinalRedirect} className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow">
-                  Go to Landlord Dashboard
-                </button>
-              </>
-            )}
-
-            {selectedRole === 'enterprise' && (
-              <>
-                <h2 className="font-jakarta text-4xl font-bold text-white mb-4">HQ Account Created.</h2>
-                <p className="text-[#3B82F6] font-bold text-lg mb-2">Status: Pending HQ Review</p>
-                <p className="text-slate-300 mb-10">Our corporate team will activate your bulk portal within 2 hours.</p>
-                <button onClick={handleFinalRedirect} className="w-full bg-[#3B82F6] text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)]">
-                  Go to Enterprise Dashboard
-                </button>
-              </>
-            )}
-            
-            <button onClick={handleFinalRedirect} className="mt-6 text-slate-500 hover:text-white text-sm font-medium">Skip to Dashboard</button>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
-};
-
-// --- Main Application Wrapper ---
-export default function App() {
-  const [currentView, setCurrentView] = useState('home'); 
-  const [dashboardRole, setDashboardRole] = useState('tenant'); 
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
-  const [policyModal, setPolicyModal] = useState(null); 
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentView]);
-
-  return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      <FontStyles />
-      <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setIsWaitlistOpen(false)} />
-      <PolicyModal type={policyModal} onClose={() => setPolicyModal(null)} />
-      
-      {['login', 'signup', 'dashboard'].includes(currentView) ? (
-        <>
-          {currentView === 'login' && <LoginPage setView={setCurrentView} setDashboardRole={setDashboardRole} />}
-          {currentView === 'signup' && <SignUpFlow setView={setCurrentView} setDashboardRole={setDashboardRole} />}
-          {currentView === 'dashboard' && (
-            <div className="flex h-screen overflow-hidden bg-[#F8FAFC] animate-in fade-in duration-700">
-              <DashboardSidebar role={dashboardRole} setRole={setDashboardRole} setView={setCurrentView} />
-              <div className="flex-1 ml-64 overflow-y-auto">
-                <DashboardTopNav title={
-                  dashboardRole === 'tenant' ? 'My Home' : 
-                  dashboardRole === 'landlord' ? 'Properties Overview' : 
-                  dashboardRole === 'admin' ? 'Platform Administration' :
-                  'Corporate Housing'
-                } />
-                {dashboardRole === 'tenant' && <TenantDashboard />}
-                {dashboardRole === 'landlord' && <LandlordDashboard />}
-                {dashboardRole === 'enterprise' && <EnterpriseDashboard />}
-                {dashboardRole === 'admin' && <AdminDashboard />}
-              </div>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="animate-in fade-in duration-500">
-          <Header setView={setCurrentView} currentView={currentView} />
-          <main>
-            {currentView === 'home' && (
-              <>
-                <Hero setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />
-                <CoreVision />
-                <ForTenants setView={setCurrentView} />
-                <ForLandlords setView={setCurrentView} />
-                <HowItWorks />
-                <Pricing setView={setCurrentView} />
-                <Waitlist />
-              </>
-            )}
-            {currentView === 'renters' && <RentersPage setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />}
-            {currentView === 'landlords' && <LandlordsPage setView={setCurrentView} />}
-            {currentView === 'browse' && <BrowsePage setView={setCurrentView} />}
-            {currentView === 'hq' && <EnterprisePage setView={setCurrentView} />}
-            {currentView === 'about' && <AboutPage setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />}
-            {currentView === 'contact' && <ContactPage setView={setCurrentView} />}
-            {currentView === 'pricing' && <PricingPage setView={setCurrentView} />}
-            {currentView === 'list-property' && <ListPropertyWizard setView={setCurrentView} />}
-          </main>
-          <Footer setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} openPolicyModal={setPolicyModal} />
-        </div>
-      )}
-    </div>
-  );
-}
+                <h3 className="font-jakarta text-2xl font-bold text-white mb-2">Analyzing your
