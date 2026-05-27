@@ -152,7 +152,6 @@ const Header = ({ setView, currentView }) => {
           `}} />
         )}
 
-        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-2 bg-white/5 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/10">
           {[
             { label: 'Find a Home', path: 'browse' },
@@ -177,7 +176,6 @@ const Header = ({ setView, currentView }) => {
           ))}
         </nav>
 
-        {/* Actions */}
         <div className="hidden md:flex items-center gap-4">
           <button onClick={() => setView('login')} className={`text-sm font-medium transition-colors hover:text-[#00F5A0] ${isScrolled ? 'text-white' : 'text-[#0D1520]'}`}>
             Login
@@ -187,13 +185,11 @@ const Header = ({ setView, currentView }) => {
           </button>
         </div>
 
-        {/* Mobile Toggle */}
         <button className="md:hidden text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-[#0D1520] border-t border-white/10 p-6 flex flex-col gap-2 shadow-xl">
            {[
@@ -1208,19 +1204,16 @@ const BrowsePage = ({ setView }) => {
 
               <div className="mt-auto">
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-transparent border border-slate-200 text-slate-500 px-3 py-1.5 rounded-lg">Credit-Building Enabled</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-transparent border border-[#E2E8F0] text-slate-500 px-3 py-1.5 rounded-md">Credit-Building Enabled</span>
                 </div>
                 
                 <p className="text-sm font-bold text-slate-600 mb-2">Total: ₦{(prop.rent * 12).toLocaleString()}/yr</p>
                 
-                <div className="flex items-end justify-between">
-                  <div className="bg-[#00F5A0] text-[#0D1520] px-4 py-2.5 rounded-xl group-hover:shadow-[0_0_15px_rgba(0,245,160,0.3)] transition-all inline-block">
-                    <p className="text-[10px] font-bold uppercase tracking-widest mb-1">AltRent Flow</p>
+                <div className="flex items-start gap-3">
+                  <div className="bg-[#00F5A0] text-[#0D1520] px-4 py-2.5 rounded-xl transition-all inline-block flex-1 shadow-[0_0_15px_rgba(0,245,160,0.3)]">
+                    <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5">AltRent Flow</p>
                     <p className="font-jakarta font-bold text-2xl leading-none">₦{prop.rent.toLocaleString()}<span className="text-sm font-medium">/mo</span></p>
                   </div>
-                  <button className="w-10 h-10 rounded-full bg-[#F8FAFC] flex items-center justify-center text-slate-400 group-hover:bg-[#0D1520] group-hover:text-[#00F5A0] transition-colors mb-1">
-                    <ChevronRight size={20} />
-                  </button>
                 </div>
               </div>
             </div>
