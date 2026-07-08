@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import { supabase } from './supabaseClient';
 import { 
   Menu, X, ArrowRight, ShieldCheck, TrendingUp, FileText, 
   ChevronRight, Building, Users, Home, Settings, LogOut, 
   CreditCard, Wallet, Bell, Search, SlidersHorizontal, CheckCircle2, ChevronDown, Check, Zap, Banknote,
   Calendar, Smartphone, Scale, RefreshCw, Map, Filter, ArrowLeft, Shield, Lock, Loader2,
-  Briefcase, Target, Heart, FileCheck, Building2, Key, Link as LinkIcon, Mail, Phone, MapPin
+  Briefcase, Target, Heart, FileCheck, Building2, Key, Link as LinkIcon, Mail, Phone, MapPin,
+  Activity, Database, AlertCircle
 } from 'lucide-react';
 
 // --- BRAND CONFIGURATION ---
@@ -1747,7 +1752,7 @@ const BrowsePage = ({ setView }) => {
     { id: 1, title: 'Luxury 2-Bed Apartment', type: 'Apartment', loc: 'Lekki Phase 1, Lagos', rent: 250000, beds: 2, baths: 2, score: 75, img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=800' },
     { id: 2, title: 'Modern Studio Suite', type: 'Studio', loc: 'Yaba, Lagos', rent: 150000, beds: 1, baths: 1, score: 65, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&q=80&w=800' },
     { id: 3, title: 'Premium 3-Bed Terrace', type: 'Terrace', loc: 'Gwarinpa, Abuja', rent: 400000, beds: 3, baths: 4, score: 80, img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=800' },
-    { id: 4, title: 'Executive 1-Bed Flat', type: 'Apartment', loc: 'Victoria Island, Lagos', rent: 300000, beds: 1, baths: 2, score: 70, img: 'https://images.unsplash.com/photo-1502672260266-1c1e5240980c?auto=format&fit=crop&q=80&w=800' },
+    { id: 4, title: 'Executive 1-Bed Flat', type: 'Apartment', loc: 'Victoria Island, Lagos', rent: 300000, beds: 1, baths: 2, score: 70, img: 'https://images.unsplash.com/photo-1749930206000-179d0b85aa7e?auto=format&fit=crop&q=80&w=800' },
     { id: 5, title: 'Spacious 4-Bed Duplex', type: 'Duplex', loc: 'Ikoyi, Lagos', rent: 800000, beds: 4, baths: 5, score: 85, img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800' },
     { id: 6, title: 'Cozy 2-Bed Flat', type: 'Apartment', loc: 'Surulere, Lagos', rent: 180000, beds: 2, baths: 2, score: 65, img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&q=80&w=800' },
   ];
@@ -2032,7 +2037,10 @@ const BrowsePage = ({ setView }) => {
 
 // --- Dashboard Components ---
 
-const DashboardSidebar = ({ role, setRole, setView }) => {
+const DashboardSidebar = () => {
+  const { profile, role, signOut } = useAuth();
+  const navigate = useNavigate();
+
   const menuItems = {
     tenant: [
       { icon: <Home size={20} />, label: 'My Home', active: true },
@@ -2051,31 +2059,43 @@ const DashboardSidebar = ({ role, setRole, setView }) => {
       { icon: <FileText size={20} />, label: 'Billing & Invoices', active: false },
       { icon: <Building size={20} />, label: 'Company Profile', active: false },
       { icon: <Settings size={20} />, label: 'Settings', active: false },
+    ],
+    admin: [
+      { icon: <Activity size={20} />, label: 'Platform Overview', active: true },
+      { icon: <Users size={20} />, label: 'User Management', active: false },
+      { icon: <Building size={20} />, label: 'Properties & KYC', active: false },
+      { icon: <Banknote size={20} />, label: 'Escrow & Payouts', active: false },
+      { icon: <Settings size={20} />, label: 'System Settings', active: false },
     ]
   };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const initials = (profile?.full_name || role || 'U')
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <div className="w-64 bg-[#0D1520] h-screen fixed left-0 top-0 text-slate-300 flex flex-col border-r border-white/5 z-50">
       <div className="p-6 border-b border-white/5">
-        <button onClick={() => setView('home')} className="mb-8 cursor-pointer outline-none">
+        <button onClick={() => navigate('/')} className="mb-2 cursor-pointer outline-none">
           <Logo variant="light" />
         </button>
-
-        <div className="bg-white/5 p-1 rounded-lg flex text-xs font-medium mb-2 border border-white/10">
-          <button onClick={() => setRole('tenant')} className={`flex-1 py-1.5 rounded-md text-center transition-colors ${role === 'tenant' ? 'bg-[#00F5A0] text-[#0D1520]' : 'hover:text-white'}`}>Tenant</button>
-          <button onClick={() => setRole('landlord')} className={`flex-1 py-1.5 rounded-md text-center transition-colors ${role === 'landlord' ? 'bg-[#00F5A0] text-[#0D1520]' : 'hover:text-white'}`}>Owner</button>
-          <button onClick={() => setRole('enterprise')} className={`flex-1 py-1.5 rounded-md text-center transition-colors ${role === 'enterprise' ? 'bg-[#3B82F6] text-white' : 'hover:text-white'}`}>Corp</button>
-        </div>
-        <p className="text-[10px] text-center text-slate-500 uppercase tracking-widest">Demo Mode Switcher</p>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-        {menuItems[role].map((item, i) => (
+        {(menuItems[role] || []).map((item, i) => (
           <button 
             key={i} 
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
               ${item.active 
-                ? (role === 'enterprise' ? 'bg-[#3B82F6]/10 text-[#3B82F6]' : 'bg-[#00F5A0]/10 text-[#00F5A0]') 
+                ? (role === 'enterprise' ? 'bg-[#3B82F6]/10 text-[#3B82F6]' : role === 'admin' ? 'bg-purple-500/10 text-purple-400' : 'bg-[#00F5A0]/10 text-[#00F5A0]') 
                 : 'hover:bg-white/5 hover:text-white'}`}
           >
             {item.icon}
@@ -2087,15 +2107,15 @@ const DashboardSidebar = ({ role, setRole, setView }) => {
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold text-sm">
-            {role === 'enterprise' ? 'AC' : 'TA'}
+            {initials}
           </div>
-          <div className="flex-1 text-left">
-            <p className="text-sm font-bold text-white">
-              {role === 'tenant' ? 'Tunde Alabi' : role === 'landlord' ? 'Alabi Properties' : 'Acme Corp'}
+          <div className="flex-1 text-left overflow-hidden">
+            <p className="text-sm font-bold text-white truncate">
+              {profile?.full_name || 'Account'}
             </p>
             <p className="text-xs text-slate-500 capitalize">{role}</p>
           </div>
-          <button onClick={() => setView('home')} className="text-slate-500 hover:text-white transition-colors">
+          <button onClick={handleLogout} className="text-slate-500 hover:text-white transition-colors">
             <LogOut size={18} />
           </button>
         </div>
@@ -2325,13 +2345,96 @@ const EnterpriseDashboard = () => (
   </div>
 );
 
-const LoginPage = ({ setView, setDashboardRole }) => {
-  const [mockRole, setMockRole] = useState('tenant'); 
+const AdminDashboard = () => (
+  <div className="p-8 max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="grid md:grid-cols-4 gap-6">
+      {[
+        { label: "Total Users", val: "12,450", sub: "+124 this week", icon: <Users size={20} className="text-purple-500" /> },
+        { label: "Active Leases", val: "4,210", sub: "across 3 cities", icon: <FileCheck size={20} className="text-purple-500" /> },
+        { label: "Escrow Volume", val: "₦1.2B", sub: "Currently locked", icon: <Database size={20} className="text-purple-500" /> },
+        { label: "Pending KYC", val: "34", sub: "Requires review", icon: <AlertCircle size={20} className="text-amber-500" /> },
+      ].map((stat, i) => (
+        <div key={i} className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-sm font-semibold text-slate-500">{stat.label}</h3>
+            {stat.icon}
+          </div>
+          <p className="text-3xl font-jakarta font-bold text-[#0D1520]">{stat.val}</p>
+          <p className="text-xs text-slate-400 mt-2">{stat.sub}</p>
+        </div>
+      ))}
+    </div>
 
-  const handleLogin = (e) => {
+    <div>
+      <h3 className="font-jakarta text-lg font-bold text-[#0D1520] mb-4">Recent KYC & Approvals</h3>
+      <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm">
+        <table className="w-full text-left border-collapse font-inter">
+          <thead>
+            <tr className="bg-slate-50 border-b border-[#E2E8F0] text-xs uppercase tracking-wider text-slate-500 font-semibold">
+              <th className="p-4">User</th>
+              <th className="p-4">Role</th>
+              <th className="p-4">Trust Score</th>
+              <th className="p-4">Date</th>
+              <th className="p-4">Action</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm">
+            {[
+              { name: 'Oluwaseun Adedayo', role: 'Tenant', score: '82', date: 'Today, 10:45 AM' },
+              { name: 'Zylus Properties Ltd', role: 'Landlord', score: 'N/A', date: 'Today, 09:12 AM' },
+              { name: 'Chioma Chukwuma', role: 'Tenant', score: '64', date: 'Yesterday' },
+            ].map((user, i) => (
+              <tr key={i} className="border-b border-[#E2E8F0] last:border-0 hover:bg-slate-50 transition-colors">
+                <td className="p-4 font-medium text-[#0D1520]">{user.name}</td>
+                <td className="p-4 text-slate-600">{user.role}</td>
+                <td className="p-4 font-semibold text-[#0D1520]">
+                  <span className={user.score >= 70 ? 'text-[#00F5A0]' : user.score !== 'N/A' ? 'text-amber-500' : 'text-slate-400'}>
+                    {user.score}
+                  </span>
+                </td>
+                <td className="p-4 text-slate-500">{user.date}</td>
+                <td className="p-4">
+                  <button className="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors">Review</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+const LoginPage = () => {
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setDashboardRole(mockRole);
-    setView('dashboard');
+    setError(null);
+    setSubmitting(true);
+
+    const { data, error } = await signIn({ email, password });
+    setSubmitting(false);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    // Fetch the role fresh right after login so we redirect to the
+    // right dashboard even before AuthContext's listener catches up.
+    const { data: profileRow } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single();
+
+    navigate(`/${profileRow?.role || 'tenant'}`);
   };
 
   return (
@@ -2341,7 +2444,7 @@ const LoginPage = ({ setView, setDashboardRole }) => {
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-10">
-          <button onClick={() => setView('home')} className="mb-8 cursor-pointer outline-none">
+          <button onClick={() => navigate('/')} className="mb-8 cursor-pointer outline-none">
             <Logo variant="light" className="justify-center" />
           </button>
           <h1 className="font-jakarta text-3xl font-bold text-white mb-2">Welcome Back</h1>
@@ -2350,11 +2453,18 @@ const LoginPage = ({ setView, setDashboardRole }) => {
 
         <div className="glass-panel-dark p-8 rounded-3xl border border-white/10 shadow-2xl">
           <form onSubmit={handleLogin} className="space-y-5">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl">
+                {error}
+              </div>
+            )}
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Email Address</label>
               <input 
                 type="email" 
-                defaultValue="tunde@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" 
               />
             </div>
@@ -2362,62 +2472,58 @@ const LoginPage = ({ setView, setDashboardRole }) => {
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Password</label>
               <input 
                 type="password" 
-                defaultValue="••••••••"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" 
               />
             </div>
 
-            <div className="pt-2 pb-2">
-              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">Simulate Login As:</label>
-              <div className="flex bg-[#0D1520] p-1 rounded-lg border border-white/10">
-                {['tenant', 'landlord', 'enterprise'].map(r => (
-                  <button 
-                    type="button" 
-                    key={r} 
-                    onClick={() => setMockRole(r)}
-                    className={`flex-1 py-1.5 rounded-md text-xs font-bold capitalize transition-colors ${mockRole === r ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-white'}`}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button type="submit" className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow mt-4">
-              Sign In
+            <button type="submit" disabled={submitting} className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow mt-4 disabled:opacity-60">
+              {submitting ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-
-          <div className="flex items-center gap-4 my-8 opacity-50">
-            <div className="h-px bg-white flex-1" />
-            <span className="text-xs font-bold text-white uppercase">Or continue with</span>
-            <div className="h-px bg-white flex-1" />
-          </div>
-
-          <div className="space-y-3">
-            <button className="w-full bg-transparent border border-white/20 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-white/5 transition-colors">
-              <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
-              Google
-            </button>
-            <button className="w-full bg-transparent border border-white/20 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-white/5 transition-colors">
-              <svg className="w-5 h-5 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              LinkedIn
-            </button>
-          </div>
         </div>
         
         <p className="text-center text-slate-500 text-sm mt-8">
-          Don't have an account? <button onClick={() => setView('signup')} className="text-[#00F5A0] font-bold hover:underline">Get Started</button>
+          Don't have an account? <button onClick={() => navigate('/signup')} className="text-[#00F5A0] font-bold hover:underline">Get Started</button>
         </p>
       </div>
     </div>
   );
 };
 
-const SignUpFlow = ({ setView, setDashboardRole }) => {
+const SignUpFlow = () => {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState(null);
   const [isProcessingMono, setIsProcessingMono] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [signupError, setSignupError] = useState(null);
+  const [creatingAccount, setCreatingAccount] = useState(false);
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setSignupError(null);
+    setCreatingAccount(true);
+
+    // Create the real Supabase account now; the role is written to
+    // auth metadata and picked up by the DB trigger that seeds
+    // profiles.role (see supabase_setup.sql). Admin is never an
+    // option here — only tenant/landlord/enterprise, chosen in step 1.
+    const { error } = await signUp({ email, password, fullName, role: selectedRole });
+    setCreatingAccount(false);
+
+    if (error) {
+      setSignupError(error.message);
+      return;
+    }
+    setStep(3);
+  };
 
   const handleMonoAuth = () => {
     setIsProcessingMono(true);
@@ -2428,8 +2534,7 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
   };
 
   const handleFinalRedirect = () => {
-    setDashboardRole(selectedRole);
-    setView('dashboard');
+    navigate(`/${selectedRole}`);
   };
 
   return (
@@ -2440,10 +2545,10 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
       <div className="w-full max-w-4xl relative z-10">
         
         <div className="absolute top-[-80px] left-0 right-0 flex justify-between items-center">
-          <button onClick={() => setView('home')} className="cursor-pointer outline-none">
+          <button onClick={() => navigate('/')} className="cursor-pointer outline-none">
             <Logo variant="light" />
           </button>
-          <button onClick={() => setView('login')} className="text-slate-400 hover:text-white text-sm font-medium transition-colors">Log In Instead</button>
+          <button onClick={() => navigate('/login')} className="text-slate-400 hover:text-white text-sm font-medium transition-colors">Log In Instead</button>
         </div>
 
         {step === 1 && (
@@ -2504,19 +2609,28 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
             </div>
 
             <div className="glass-panel-dark p-8 rounded-3xl border border-white/10 shadow-xl">
-              <form onSubmit={(e) => { e.preventDefault(); setStep(3); }} className="space-y-5">
+              <form onSubmit={handleProfileSubmit} className="space-y-5">
+                {signupError && (
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl">
+                    {signupError}
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-bold text-[#00F5A0] uppercase tracking-wider mb-2 ml-1">Full Name</label>
-                  <input required type="text" className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
+                  <input required type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-[#00F5A0] uppercase tracking-wider mb-2 ml-1">Phone Number</label>
-                  <input required type="tel" className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
+                  <input required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
                 </div>
                 <div className="relative">
                   <label className="block text-xs font-bold text-[#00F5A0] uppercase tracking-wider mb-2 ml-1">Email Address</label>
-                  <input required type="email" className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 pr-10 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
+                  <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 pr-10 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
                   <CheckCircle2 size={16} className="absolute right-4 top-[42px] text-[#00F5A0]" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#00F5A0] uppercase tracking-wider mb-2 ml-1">Password</label>
+                  <input required minLength={6} type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-[#0D1520] border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00F5A0] focus:ring-1 focus:ring-[#00F5A0] transition-all" />
                 </div>
                 
                 <div className="flex items-start gap-3 pt-4">
@@ -2526,8 +2640,8 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
                   </p>
                 </div>
 
-                <button type="submit" className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow mt-4">
-                  Create Profile
+                <button type="submit" disabled={creatingAccount} className="w-full bg-[#00F5A0] text-[#0D1520] py-4 rounded-xl font-bold text-lg hover:bg-[#00d68b] transition-colors hover-glow mt-4 disabled:opacity-60">
+                  {creatingAccount ? 'Creating Account...' : 'Create Profile'}
                 </button>
               </form>
             </div>
@@ -2613,70 +2727,120 @@ const SignUpFlow = ({ setView, setDashboardRole }) => {
   );
 };
 
-// --- Main Application Wrapper ---
-export default function App() {
-  const [currentView, setCurrentView] = useState('home'); 
-  const [dashboardRole, setDashboardRole] = useState('tenant'); 
+// --- Dashboard layout shared by every role's dashboard route ---
+const DASHBOARD_TITLES = {
+  tenant: 'My Home',
+  landlord: 'Properties Overview',
+  enterprise: 'Corporate Housing',
+  admin: 'Platform Overview',
+};
+
+const DashboardLayout = ({ children }) => {
+  const { role } = useAuth();
+  return (
+    <div className="flex h-screen overflow-hidden bg-[#F8FAFC] animate-in fade-in duration-700">
+      <DashboardSidebar />
+      <div className="flex-1 ml-64 overflow-y-auto">
+        <DashboardTopNav title={DASHBOARD_TITLES[role] || 'Dashboard'} />
+        {children}
+      </div>
+    </div>
+  );
+};
+
+// --- The public marketing site: unchanged internal view-switching,
+// except 'login'/'signup' are translated into real route navigation
+// so every existing setView('login') / setView('signup') button
+// across Header, Footer, and the page components keeps working
+// without having to touch each one individually. ---
+const MarketingSite = () => {
+  const [currentView, setCurrentView] = useState('home');
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
-  const [policyModal, setPolicyModal] = useState(null); 
+  const [policyModal, setPolicyModal] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentView]);
+
+  const setView = (view) => {
+    if (view === 'login') return navigate('/login');
+    if (view === 'signup') return navigate('/signup');
+    setCurrentView(view);
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <FontStyles />
       <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setIsWaitlistOpen(false)} />
       <PolicyModal type={policyModal} onClose={() => setPolicyModal(null)} />
-      
-      {['login', 'signup', 'dashboard'].includes(currentView) ? (
-        <>
-          {currentView === 'login' && <LoginPage setView={setCurrentView} setDashboardRole={setDashboardRole} />}
-          {currentView === 'signup' && <SignUpFlow setView={setCurrentView} setDashboardRole={setDashboardRole} />}
-          {currentView === 'dashboard' && (
-            <div className="flex h-screen overflow-hidden bg-[#F8FAFC] animate-in fade-in duration-700">
-              <DashboardSidebar role={dashboardRole} setRole={setDashboardRole} setView={setCurrentView} />
-              <div className="flex-1 ml-64 overflow-y-auto">
-                <DashboardTopNav title={
-                  dashboardRole === 'tenant' ? 'My Home' : 
-                  dashboardRole === 'landlord' ? 'Properties Overview' : 
-                  'Corporate Housing'
-                } />
-                {dashboardRole === 'tenant' && <TenantDashboard />}
-                {dashboardRole === 'landlord' && <LandlordDashboard />}
-                {dashboardRole === 'enterprise' && <EnterpriseDashboard />}
-              </div>
-            </div>
+      <div className="animate-in fade-in duration-500">
+        <Header setView={setView} currentView={currentView} />
+        <main>
+          {currentView === 'home' && (
+            <>
+              <Hero setView={setView} openWaitlist={() => setIsWaitlistOpen(true)} />
+              <CoreVision />
+              <ForTenants setView={setView} />
+              <ForLandlords setView={setView} />
+              <HowItWorks />
+              <Pricing setView={setView} />
+              <Waitlist />
+            </>
           )}
-        </>
-      ) : (
-        <div className="animate-in fade-in duration-500">
-          <Header setView={setCurrentView} currentView={currentView} />
-          <main>
-            {currentView === 'home' && (
-              <>
-                <Hero setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />
-                <CoreVision />
-                <ForTenants setView={setCurrentView} />
-                <ForLandlords setView={setCurrentView} />
-                <HowItWorks />
-                <Pricing setView={setCurrentView} />
-                <Waitlist />
-              </>
-            )}
-            {currentView === 'renters' && <RentersPage setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />}
-            {currentView === 'landlords' && <LandlordsPage setView={setCurrentView} />}
-            {currentView === 'browse' && <BrowsePage setView={setCurrentView} />}
-            {currentView === 'hq' && <EnterprisePage setView={setCurrentView} />}
-            {currentView === 'about' && <AboutPage setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} />}
-            {currentView === 'contact' && <ContactPage setView={setCurrentView} />}
-            {currentView === 'pricing' && <PricingPage setView={setCurrentView} />}
-            {currentView === 'list-property' && <ListPropertyWizard setView={setCurrentView} />}
-          </main>
-          <Footer setView={setCurrentView} openWaitlist={() => setIsWaitlistOpen(true)} openPolicyModal={setPolicyModal} />
-        </div>
-      )}
+          {currentView === 'renters' && <RentersPage setView={setView} openWaitlist={() => setIsWaitlistOpen(true)} />}
+          {currentView === 'landlords' && <LandlordsPage setView={setView} />}
+          {currentView === 'browse' && <BrowsePage setView={setView} />}
+          {currentView === 'hq' && <EnterprisePage setView={setView} />}
+          {currentView === 'about' && <AboutPage setView={setView} openWaitlist={() => setIsWaitlistOpen(true)} />}
+          {currentView === 'contact' && <ContactPage setView={setView} />}
+          {currentView === 'pricing' && <PricingPage setView={setView} />}
+          {currentView === 'list-property' && <ListPropertyWizard setView={setView} />}
+        </main>
+        <Footer setView={setView} openWaitlist={() => setIsWaitlistOpen(true)} openPolicyModal={setPolicyModal} />
+      </div>
     </div>
+  );
+};
+
+// --- Main Application Wrapper ---
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpFlow />} />
+
+      <Route path="/tenant/*" element={
+        <ProtectedRoute allowedRoles={['tenant']}>
+          <DashboardLayout><TenantDashboard /></DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/landlord/*" element={
+        <ProtectedRoute allowedRoles={['landlord']}>
+          <DashboardLayout><LandlordDashboard /></DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/enterprise/*" element={
+        <ProtectedRoute allowedRoles={['enterprise']}>
+          <DashboardLayout><EnterpriseDashboard /></DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/*" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          <DashboardLayout><AdminDashboard /></DashboardLayout>
+        </ProtectedRoute>
+      } />
+
+      {/* Everything else (home, /browse, /renters, /about, ...) is the marketing site */}
+      <Route path="/*" element={<MarketingSite />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
